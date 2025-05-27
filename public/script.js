@@ -1,20 +1,32 @@
 const socket = io();
+let username = "";
 
-const form = document.getElementById('form');
-const input = document.getElementById('input');
-const messages = document.getElementById('messages');
+function login() {
+    username = document.getElementById("usernameInput").value.trim();
+    if (!username) return;
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("chatScreen").style.display = "block";
+    socket.emit("login", username);
+}
 
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (input.value) {
-    socket.emit('chat message', input.value);
-    input.value = '';
-  }
+function sendMessage() {
+    const input = document.getElementById("messageInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+    socket.emit("message", msg);
+    input.value = "";
+}
+
+socket.on("message", (msg) => {
+    const div = document.createElement("div");
+    div.textContent = `[${msg.timestamp}] ${msg.user}: ${msg.text}`;
+    document.getElementById("messages").appendChild(div);
 });
 
-socket.on('chat message', function(msg) {
-  const item = document.createElement('li');
-  item.textContent = msg;
-  messages.appendChild(item);
-  window.scrollTo(0, document.body.scrollHeight);
+socket.on("history", (msgs) => {
+    msgs.forEach(msg => {
+        const div = document.createElement("div");
+        div.textContent = `[${msg.timestamp}] ${msg.user}: ${msg.text}`;
+        document.getElementById("messages").appendChild(div);
+    });
 });
