@@ -1,0 +1,39 @@
+body {
+  background-color: #111;
+  color: #0f0;
+  font-family: monospace;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+#chat {
+  width: 90%;
+  max-width: 600px;
+}
+#messages {
+  list-style: none;
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+#form {
+  display: flex;
+  margin-top: 10px;
+}
+#input {
+  flex: 1;
+  padding: 10px;
+  background: #222;
+  border: none;
+  color: #0f0;
+}
+button {
+  padding: 10px;
+  background: #0f0;
+  border: none;
+  color: #111;
+  cursor: pointer;
+}
