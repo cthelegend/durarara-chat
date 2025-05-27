@@ -1,5 +1,5 @@
 const socket = io();
-let username = "";
+let username = localStorage.getItem("username") || "Anônimo";
 
 // Formatar timestamp BR (sem segundos)
 function formatTimestamp() {
