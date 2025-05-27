@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>15KCRIS CHAT</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <title>Chat 15KCRIS</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="loginScreen">
+    <div id="loginScreen" class="centered">
         <h2>Escolha um username:</h2>
-        <input type="text" id="usernameInput" placeholder="Nome de usuário">
+        <input type="text" id="usernameInput" placeholder="Nome de usuário" />
         <button onclick="login()">Entrar</button>
     </div>
 
-    <div id="chatScreen" style="display:none;">
+    <div id="chatScreen" class="chat-container" style="display:none;">
         <div id="messages"></div>
-        <div class="inputContainer">
-            <input type="text" id="messageInput" placeholder="Digite sua mensagem">
-            <button class="emojiButton" onclick="insertEmoji('😊')">😀</button>
-            <button class="sendButton" onclick="sendMessage()">Enviar</button>
+        <div class="input-area">
+            <button id="emojiBtn" title="Emoji">😀</button>
+            <input type="text" id="messageInput" placeholder="Digite sua mensagem" autocomplete="off" />
+            <button id="sendBtn">Enviar</button>
         </div>
+        <div id="emojiPicker" class="emoji-picker hidden"></div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>

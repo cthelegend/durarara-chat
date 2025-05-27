@@ -1,43 +1,54 @@
 const socket = io();
 let username = "";
 
-// Função para formatar a data/hora no formato BR
+// Formatar timestamp BR (sem segundos)
 function formatTimestamp() {
     const now = new Date();
-    const dia = String(now.getDate()).padStart(2, '0');
-    const mes = String(now.getMonth() + 1).padStart(2, '0');
+    const dia = String(now.getDate()).padStart(2, "0");
+    const mes = String(now.getMonth() + 1).padStart(2, "0");
     const ano = now.getFullYear();
-    const horas = String(now.getHours()).padStart(2, '0');
-    const minutos = String(now.getMinutes()).padStart(2, '0');
+    const horas = String(now.getHours()).padStart(2, "0");
+    const minutos = String(now.getMinutes()).padStart(2, "0");
     return `${dia}/${mes}/${ano} - ${horas}:${minutos}`;
 }
 
-// Converte códigos como :smile: para emojis
-function parseEmojis(text) {
-    const emojiMap = {
-        ":smile:": "😄",
-        ":heart:": "❤️",
-        ":thumbsup:": "👍",
-        ":fire:": "🔥",
-        ":clap:": "👏",
-        ":cry:": "😢",
-        ":laugh:": "😂",
-        ":poop:": "💩"
-    };
+// Emoji map com código => emoji
+const emojiMap = {
+    ":smile:": "😄",
+    ":heart:": "❤️",
+    ":thumbsup:": "👍",
+    ":fire:": "🔥",
+    ":clap:": "👏",
+    ":cry:": "😢",
+    ":laugh:": "😂",
+    ":poop:": "💩",
+    ":grin:": "😁",
+    ":wink:": "😉",
+    ":sunglasses:": "😎",
+    ":thinking:": "🤔",
+    ":party:": "🥳",
+    ":star:": "⭐",
+    ":rocket:": "🚀",
+    ":moon:": "🌙",
+    ":sun:": "☀️",
+    ":coffee:": "☕",
+};
 
-    return text.replace(/:\w+:/g, match => emojiMap[match] || match);
+// Parse emojis no texto
+function parseEmojis(text) {
+    return text.replace(/:\w+:/g, (match) => emojiMap[match] || match);
 }
 
-// Verifica se é um link de imagem (png, jpg, gif)
+// Verifica se texto é URL de imagem (com possíveis query params)
 function isImageURL(text) {
-    return text.match(/\.(jpeg|jpg|gif|png)$/i);
+    return /\.(jpeg|jpg|gif|png)(\?.*)?$/i.test(text);
 }
 
 function login() {
     username = document.getElementById("usernameInput").value.trim();
-    if (!username) return;
+    if (!username) return alert("Digite um username válido!");
     document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("chatScreen").style.display = "block";
+    document.getElementById("chatScreen").style.display = "flex";
     socket.emit("login", username);
 }
 
@@ -47,16 +58,17 @@ function sendMessage() {
     if (!msg) return;
 
     const timestamp = formatTimestamp();
-    const parsed = parseEmojis(msg);
+    const parsedText = parseEmojis(msg);
 
     const payload = {
-        text: parsed,
+        text: parsedText,
         timestamp,
-        user: username
+        user: username,
     };
 
     socket.emit("message", payload);
     input.value = "";
+    hideEmojiPicker();
 }
 
 function scrollToBottom() {
@@ -64,57 +76,113 @@ function scrollToBottom() {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-socket.on("message", (msg) => {
+function createMessageDiv(msg) {
     const div = document.createElement("div");
+    div.classList.add("message");
+    div.classList.add(msg.user === username ? "self" : "other");
+
+    const meta = document.createElement("div");
+    meta.classList.add("message-meta");
+    meta.textContent = `${msg.user} • ${msg.timestamp}`;
+    div.appendChild(meta);
 
     if (isImageURL(msg.text)) {
         const img = document.createElement("img");
         img.src = msg.text;
-        img.style.maxWidth = "200px";
-        img.style.borderRadius = "8px";
-        div.innerHTML = `[${msg.timestamp}] ${msg.user}:<br>`;
+        img.alt = "imagem enviada";
         div.appendChild(img);
     } else {
-        div.textContent = `[${msg.timestamp}] ${msg.user}: ${msg.text}`;
+        // Mensagem texto com emojis
+        const textSpan = document.createElement("span");
+        textSpan.innerHTML = parseEmojis(msg.text);
+        div.appendChild(textSpan);
     }
 
+    return div;
+}
+
+socket.on("message", (msg) => {
+    const div = createMessageDiv(msg);
     document.getElementById("messages").appendChild(div);
     scrollToBottom();
 });
 
 socket.on("history", (msgs) => {
-    msgs.forEach(msg => {
-        const div = document.createElement("div");
-
-        if (isImageURL(msg.text)) {
-            const img = document.createElement("img");
-            img.src = msg.text;
-            img.style.maxWidth = "200px";
-            img.style.borderRadius = "8px";
-            div.innerHTML = `[${msg.timestamp}] ${msg.user}:<br>`;
-            div.appendChild(img);
-        } else {
-            div.textContent = `[${msg.timestamp}] ${msg.user}: ${msg.text}`;
-        }
-
-        document.getElementById("messages").appendChild(div);
+    const container = document.getElementById("messages");
+    container.innerHTML = "";
+    msgs.forEach((msg) => {
+        const div = createMessageDiv(msg);
+        container.appendChild(div);
     });
     scrollToBottom();
 });
 
-// Pressionar Enter para enviar
-document.addEventListener("keydown", function (e) {
+// ENTER para enviar
+document.getElementById("messageInput").addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-        const input = document.getElementById("messageInput");
-        if (document.activeElement === input) {
-            sendMessage();
-        }
+        sendMessage();
     }
 });
 
-// Função para inserir emoji no input
-function insertEmoji(emoji) {
-    const input = document.getElementById("messageInput");
-    input.value += emoji;
+// BOTÕES EMOJI
+const emojiBtn = document.getElementById("emojiBtn");
+const emojiPicker = document.getElementById("emojiPicker");
+
+const emojis = Object.entries(emojiMap).map(
+    ([code, emoji]) => ({ code, emoji })
+);
+
+function showEmojiPicker() {
+    emojiPicker.classList.remove("hidden");
+}
+
+function hideEmojiPicker() {
+    emojiPicker.classList.add("hidden");
+}
+
+function toggleEmojiPicker() {
+    emojiPicker.classList.toggle("hidden");
+}
+
+// Montar emoji picker
+function buildEmojiPicker() {
+    emojiPicker.innerHTML = "";
+    emojis.forEach(({ code, emoji }) => {
+        const span = document.createElement("span");
+        span.textContent = emoji;
+        span.title = code;
+        span.onclick = () => {
+            insertAtCursor(document.getElementById("messageInput"), code + " ");
+            hideEmojiPicker();
+        };
+        emojiPicker.appendChild(span);
+    });
+}
+
+// Inserir texto no cursor da input
+function insertAtCursor(input, textToInsert) {
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const text = input.value;
+    input.value = text.slice(0, start) + textToInsert + text.slice(end);
+    input.selectionStart = input.selectionEnd = start + textToInsert.length;
     input.focus();
 }
+
+emojiBtn.addEventListener("click", () => {
+    toggleEmojiPicker();
+});
+
+// Fechar emoji picker se clicar fora
+document.addEventListener("click", (e) => {
+    if (
+        !emojiPicker.contains(e.target) &&
+        e.target !== emojiBtn
+    ) {
+        hideEmojiPicker();
+    }
+});
+
+window.onload = () => {
+    buildEmojiPicker();
+};

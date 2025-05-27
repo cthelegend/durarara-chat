@@ -1,20 +1,22 @@
 const express = require("express");
 const http = require("http");
+const cors = require("cors");
 const { Server } = require("socket.io");
+
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: { origin: "*" }
+});
 
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.static("public"));
 
 let messageHistory = [];
 
-app.use(express.static("public")); // pasta com HTML/CSS/JS
-
 io.on("connection", (socket) => {
-    console.log("Novo usuário conectado");
+    console.log("Usuário conectado");
 
-    // Envia histórico ao novo usuário
     socket.emit("history", messageHistory);
 
     socket.on("login", (username) => {
@@ -31,6 +33,7 @@ io.on("connection", (socket) => {
     });
 });
 
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
