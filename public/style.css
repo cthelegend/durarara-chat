@@ -1,12 +1,12 @@
 body {
     background-color: #111;
-    color: #eee;
+    color: #684dff;
     font-family: Arial, sans-serif;
     padding: 20px;
 }
 
 #messages {
-    border: 1px solid #333;
+    border: 1px solid #4c00ff;
     height: 300px;
     overflow-y: scroll;
     padding: 10px;
