@@ -1,6 +1,9 @@
 
+// script.js (versão finalizada com reply, avatar e emojis)
 const socket = io();
 let username = localStorage.getItem("username") || "Anônimo";
+let avatar = localStorage.getItem("avatar") || "avatar.png";
+let replyTo = null;
 
 socket.emit("login", username);
 
@@ -15,16 +18,6 @@ function formatTimestamp() {
     });
 }
 
-function parseEmojis(text) {
-    const emojiMap = {
-        ":smile:": "😄", ":heart:": "❤️", ":thumbsup:": "👍", ":fire:": "🔥",
-        ":clap:": "👏", ":cry:": "😢", ":laugh:": "😂", ":poop:": "💩",
-        ":grin:": "😁", ":wink:": "😉", ":sunglasses:": "😎", ":thinking:": "🤔",
-        ":party:": "🥳", ":star:": "⭐", ":rocket:": "🚀", ":moon:": "🌙", ":sun:": "☀️", ":coffee:": "☕",
-    };
-    return text.replace(/:\w+:/g, match => emojiMap[match] || match);
-}
-
 function isImageURL(text) {
     return /\.(jpeg|jpg|gif|png)(\?.*)?$/i.test(text);
 }
@@ -33,13 +26,19 @@ function sendMessage() {
     const input = document.getElementById("messageInput");
     let msg = input.value.trim();
     if (!msg) return;
+
     const payload = {
         text: msg,
         timestamp: formatTimestamp(),
-        user: username
+        user: username,
+        avatar: avatar,
+        replyTo: replyTo || null
     };
+
     socket.emit("message", payload);
     input.value = "";
+    replyTo = null;
+    hideReplyUI();
     hideEmojiPicker();
 }
 
@@ -47,42 +46,66 @@ function createMessageDiv(msg) {
     const div = document.createElement("div");
     div.classList.add("message", msg.user === username ? "self" : "other");
 
+    const avatarImg = document.createElement("img");
+    avatarImg.src = msg.avatar || "avatar.png";
+    avatarImg.className = "avatar";
+    div.appendChild(avatarImg);
+
+    const content = document.createElement("div");
+    content.className = "bubble";
+
+    if (msg.replyTo) {
+        const replyBlock = document.createElement("div");
+        replyBlock.className = "reply-block";
+        replyBlock.textContent = `${msg.replyTo.user}: ${msg.replyTo.text}`.slice(0, 100);
+        content.appendChild(replyBlock);
+    }
+
     const meta = document.createElement("div");
     meta.classList.add("message-meta");
     meta.textContent = `${msg.user} • ${msg.timestamp}`;
-    div.appendChild(meta);
+    content.appendChild(meta);
 
-    if (isImageURL(msg.text)) {
-        const img = document.createElement("img");
-        img.src = msg.text;
-        img.alt = "imagem enviada";
-        div.appendChild(img);
-    } else {
-        const span = document.createElement("span");
-        span.innerHTML = parseEmojis(msg.text);
-        div.appendChild(span);
-    }
+    const span = document.createElement("span");
+    span.innerHTML = msg.text;
+    content.appendChild(span);
 
-    const replyBtn = document.createElement("div");
-    replyBtn.className = "reply-btn";
-    replyBtn.textContent = "↩️";
-    replyBtn.onclick = () => {
-        const input = document.getElementById("messageInput");
-        input.value = `@${msg.user} `;
-        input.focus();
-    };
-    div.appendChild(replyBtn);
+    const hoverBtn = document.createElement("div");
+    hoverBtn.className = "reply-hover-btn";
+    hoverBtn.textContent = "↩️";
+    hoverBtn.onclick = () => showReplyUI(msg);
+    content.appendChild(hoverBtn);
 
     let startX = 0;
     div.addEventListener("touchstart", e => startX = e.touches[0].clientX);
     div.addEventListener("touchend", e => {
         const endX = e.changedTouches[0].clientX;
-        if (endX - startX > 50) {
-            document.getElementById("messageInput").value = `@${msg.user} `;
-        }
+        if (endX - startX > 50) showReplyUI(msg);
     });
 
+    div.appendChild(content);
     return div;
+}
+
+function showReplyUI(msg) {
+    replyTo = {
+        user: msg.user,
+        text: msg.text
+    };
+    const replyInfo = document.getElementById("replyInfo");
+    replyInfo.innerHTML = `<strong>Respondendo a:</strong> ${msg.user}: ${msg.text.slice(0, 60)} <span style='float:right; cursor:pointer' onclick='hideReplyUI()'>❌</span>`;
+    replyInfo.style.display = "block";
+}
+
+function hideReplyUI() {
+    const replyInfo = document.getElementById("replyInfo");
+    replyInfo.style.display = "none";
+    replyInfo.innerHTML = "";
+    replyTo = null;
+}
+
+function hideEmojiPicker() {
+    document.getElementById("emojiPicker").classList.add("hidden");
 }
 
 function scrollToBottom() {
@@ -108,3 +131,23 @@ document.getElementById("messageInput").addEventListener("keydown", e => {
 });
 
 document.getElementById("sendBtn").addEventListener("click", sendMessage);
+
+// Emoji Picker funcional com ícones (exemplo básico)
+const emojiList = ["😄", "❤️", "👍", "🔥", "👏", "😢", "😂", "💩", "😁", "😉", "😎", "🤔", "🥳", "⭐", "🚀", "🌙", "☀️", "☕"];
+const picker = document.getElementById("emojiPicker");
+const emojiBtn = document.getElementById("emojiBtn");
+const input = document.getElementById("messageInput");
+
+emojiBtn.addEventListener("click", () => picker.classList.toggle("hidden"));
+
+picker.innerHTML = "";
+emojiList.forEach(e => {
+    const el = document.createElement("span");
+    el.textContent = e;
+    el.addEventListener("click", () => {
+        input.value += e;
+        input.focus();
+        hideEmojiPicker();
+    });
+    picker.appendChild(el);
+});
