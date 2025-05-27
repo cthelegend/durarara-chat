@@ -1,33 +1,30 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <title>Chat 15KCRIS</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat 15KCRIS</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<script>
-if (!localStorage.getItem("username")) {
-  window.location.href = "login.html";
-}
-</script>
-    <div id="loginScreen" class="centered">
-        <h2>Escolha um username:</h2>
-        <input type="text" id="usernameInput" placeholder="Nome de usuário" />
-        <button onclick="login()">Entrar</button>
-    </div>
+  <script>
+    if (!localStorage.getItem("username")) {
+      window.location.href = "login.html";
+    }
+  </script>
 
-    <div id="chatScreen" class="chat-container" style="display:none;">
-        <div id="messages"></div>
-        <div class="input-area">
-            <button id="emojiBtn" title="Emoji">😀</button>
-            <input type="text" id="messageInput" placeholder="Digite sua mensagem" autocomplete="off" />
-            <button id="sendBtn">Enviar</button>
-        </div>
-        <div id="emojiPicker" class="emoji-picker hidden"></div>
+  <div id="chatScreen" class="chat-container">
+    <div id="messages"></div>
+    <div class="input-area">
+      <button id="emojiBtn" title="Emoji">😀</button>
+      <input type="text" id="messageInput" placeholder="Digite sua mensagem" autocomplete="off" />
+      <button id="sendBtn">Enviar</button>
     </div>
+    <div id="emojiPicker" class="emoji-picker hidden"></div>
+  </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
