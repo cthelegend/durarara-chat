@@ -23,7 +23,7 @@ Um chat anônimo em tempo real inspirado no fórum clandestino do anime **Durara
 ![Login](https://i.imgur.com/sDchvsY.png)
 
 ### Interface do chat:
-![Chat](https://i.imgur.com/yjIYupg.png)
+![Chat](https://i.imgur.com/Qo3qz6P.png)
 
 ---
 
