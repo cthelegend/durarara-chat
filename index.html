@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fórum Anônimo</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    body {
+      background-color: #0d0d0d;
+      color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      background-color: #1a1a1a;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      border-bottom: 1px solid #333;
+    }
+    #chat {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    #chat p {
+      margin-bottom: 0.5rem;
+    }
+    .username {
+      color: #55ddff;
+    }
+    footer {
+      display: flex;
+      padding: 1rem;
+      background-color: #1a1a1a;
+      border-top: 1px solid #333;
+    }
+    input, button {
+      padding: 0.5rem;
+      background-color: #111;
+      border: 1px solid #444;
+      color: #f2f2f2;
+    }
+    #message {
+      flex: 1;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>Fórum Anônimo</header>
+  <div id="chat"></div>
+  <footer>
+    <input type="text" id="message" placeholder="Digite sua mensagem..." autocomplete="off" />
+    <button onclick="sendMessage()">Enviar</button>
+  </footer>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io("https://seu-servidor-render-ou-railway.aqui");
+
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('message');
+    let username = prompt("Escolha um apelido:") || "Anônimo";
+
+    function sendMessage() {
+      const msg = input.value.trim();
+      if (msg) {
+        socket.emit("message", { user: username, text: msg });
+        input.value = "";
+      }
+    }
+
+    socket.on("message", ({ user, text }) => {
+      const p = document.createElement('p');
+      p.innerHTML = `<span class='username'>${user}:</span> ${text}`;
+      chat.appendChild(p);
+      chat.scrollTop = chat.scrollHeight;
+    });
+  </script>
+</body>
+</html>
