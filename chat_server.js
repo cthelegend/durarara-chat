@@ -1,36 +1,36 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
-const cors = require("cors");
+const server = http.createServer(app);
+const io = new Server(server);
 
-app.use(cors());
-app.use(express.static(__dirname + "/public"));
+const PORT = process.env.PORT || 3000;
 
-let messages = [];
+let messageHistory = [];
+
+app.use(express.static("public")); // pasta com HTML/CSS/JS
 
 io.on("connection", (socket) => {
-    let username = "";
+    console.log("Novo usuário conectado");
 
-    socket.on("login", (name) => {
-        username = name;
-        socket.emit("history", messages);
+    // Envia histórico ao novo usuário
+    socket.emit("history", messageHistory);
+
+    socket.on("login", (username) => {
+        socket.username = username;
     });
 
     socket.on("message", (msg) => {
-        const now = new Date();
-        const time = now.toLocaleTimeString();
-        const date = now.toLocaleDateString();
-        const formattedMsg = {
-            user: username,
-            text: msg,
-            timestamp: `${date} ${time}`
+        const fullMsg = {
+            ...msg,
+            user: socket.username || "Anônimo"
         };
-        messages.push(formattedMsg);
-        io.emit("message", formattedMsg);
+        messageHistory.push(fullMsg);
+        io.emit("message", fullMsg);
     });
 });
 
-http.listen(3000, () => {
-    console.log("Server running on port 3000");
+server.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
 });

@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #121212;
+    color: #ffffff;
     padding: 20px;
     margin: 0;
 }
@@ -8,19 +9,19 @@ body {
 #loginScreen, #chatScreen {
     max-width: 600px;
     margin: 0 auto;
-    background: white;
+    background: #1e1e1e;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 #messages {
     height: 300px;
     overflow-y: auto;
-    border: 1px solid #ccc;
+    border: 1px solid #333;
     padding: 10px;
     margin-bottom: 10px;
-    background-color: #fafafa;
+    background-color: #181818;
 }
 
 .inputContainer {
@@ -31,12 +32,15 @@ body {
 input[type="text"] {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
     border-radius: 6px;
     font-size: 16px;
+    background-color: #222;
+    color: #fff;
 }
 
-.sendButton {
+.sendButton,
+.emojiButton {
     background-color: #684dff;
     color: white;
     border: none;
@@ -47,24 +51,17 @@ input[type="text"] {
     transition: background-color 0.3s ease;
 }
 
-.sendButton:hover {
+.sendButton:hover,
+.emojiButton:hover {
     background-color: #5b42e5;
 }
 
-.sendButton:active {
+.sendButton:active,
+.emojiButton:active {
     background-color: #4a36cc;
 }
 
-@media (max-width: 600px) {
-    .inputContainer {
-        flex-direction: column;
-    }
-
-    .sendButton {
-        width: 100%;
-    }
-
-    input[type="text"] {
-        width: 100%;
-    }
+img {
+    max-width: 200px;
+    border-radius: 8px;
 }
