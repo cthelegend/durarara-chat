@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at center, #121212 0%, #0a0a0a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .login-card {
+      background: rgba(30, 30, 30, 0.6);
+      border: 1px solid rgba(104, 77, 255, 0.3);
+      box-shadow: 0 0 20px rgba(104, 77, 255, 0.4);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 90%;
+      max-width: 350px;
+      backdrop-filter: blur(10px);
+      color: white;
+      text-align: center;
+    }
+    .login-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      border: 2px solid #684dff;
+      background-color: #fff;
+    }
+    .login-card input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .login-card button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #684dff, #5b42e5);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.3s ease;
+    }
+    .login-card button:hover {
+      background: linear-gradient(135deg, #5b42e5, #4a36cc);
+    }
+    .small-text {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+    .small-text span {
+      color: #684dff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <img src="avatar.png" alt="avatar padrão" />
+    <input type="text" id="usernameInput" placeholder="Nome de usuário" />
+    <input type="password" id="passwordInput" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
+    <button onclick="register()">Cadastrar</button>
+    <div class="small-text">Seus dados são salvos localmente e não podem ser recuperados.</div>
+  </div>
+
+  <script>
+    function login() {
+      const user = document.getElementById("usernameInput").value.trim();
+      const pass = document.getElementById("passwordInput").value;
+
+      if (!user || !pass) return alert("Preencha todos os campos!");
+
+      const data = JSON.parse(localStorage.getItem("users") || "{}");
+
+      if (!data[user]) {
+        return alert("Usuário não encontrado!");
+      }
+
+      if (data[user] !== pass) {
+        return alert("Senha incorreta!");
+      }
+
+      localStorage.setItem("username", user);
+      window.location.href = "index.html";
+    }
+
+    function register() {
+      const user = document.getElementById("usernameInput").value.trim();
+      const pass = document.getElementById("passwordInput").value;
+
+      if (!user || !pass) return alert("Preencha todos os campos!");
+
+      let data = JSON.parse(localStorage.getItem("users") || "{}");
+
+      if (data[user]) {
+        return alert("Usuário já cadastrado.");
+      }
+
+      data[user] = pass;
+      localStorage.setItem("users", JSON.stringify(data));
+      alert("Usuário cadastrado com sucesso!");
+    }
+  </script>
+</body>
+</html>
