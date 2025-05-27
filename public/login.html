@@ -22,7 +22,7 @@
     .login-card img {
       width: 80px; height: 80px; border-radius: 50%;
       margin-bottom: 20px; border: 2px solid #684dff;
-      background-color: #fff;
+      background-color: #fff; object-fit: cover;
     }
     .login-card input {
       width: 100%; padding: 12px 15px; border-radius: 8px;
@@ -44,37 +44,77 @@
     .small-text {
       font-size: 13px; opacity: 0.7; margin-top: 10px;
     }
+    .avatar-upload {
+      margin-bottom: 15px;
+      color: #ccc;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
   <div class="login-card">
-    <img src="avatar.png" alt="avatar padrão" />
+    <img id="previewAvatar" src="avatar.png" alt="avatar padrão" />
     <input type="text" id="usernameInput" placeholder="Nome de usuário" />
     <input type="password" id="passwordInput" placeholder="Senha" />
+    <div class="avatar-upload">
+      <label for="avatarInput">Selecionar avatar:</label><br>
+      <input type="file" id="avatarInput" accept="image/*" />
+    </div>
     <button onclick="login()">Entrar</button>
     <button onclick="register()">Cadastrar</button>
-    <div class="small-text">Seus dados são salvos localmente e não podem ser recuperados.</div>
+    <button onclick="gerarNomeAleatorio()">Gerar Nome Aleatório</button>
+    <div class="small-text">
+      Seus dados são salvos localmente e não podem ser recuperados.<br>
+      <span style="font-size: 0.8em; color: #aaa">
+        🔒 Este chat é anônimo, mas o IP pode ser registrado pelo serviço de hospedagem.<br>
+        Para mais privacidade, use <a href="https://www.torproject.org/" target="_blank" style="color: #fff; text-decoration: underline;">Tor</a> ou uma <a href="https://www.privacyguides.org/vpn/" target="_blank" style="color: #fff; text-decoration: underline;">VPN confiável</a>.
+      </span>
+    </div>
   </div>
+
   <script>
+    const avatarInput = document.getElementById("avatarInput");
+    const previewAvatar = document.getElementById("previewAvatar");
+
+    avatarInput.addEventListener("change", () => {
+      const file = avatarInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          previewAvatar.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
     function login() {
       const user = document.getElementById("usernameInput").value.trim();
       const pass = document.getElementById("passwordInput").value;
       if (!user || !pass) return alert("Preencha todos os campos!");
       const data = JSON.parse(localStorage.getItem("users") || "{}");
       if (!data[user]) return alert("Usuário não encontrado!");
-      if (data[user] !== pass) return alert("Senha incorreta!");
+      if (data[user].pass !== pass) return alert("Senha incorreta!");
       localStorage.setItem("username", user);
+      localStorage.setItem("avatar", data[user].avatar || "avatar.png");
       window.location.href = "index.html";
     }
+
     function register() {
       const user = document.getElementById("usernameInput").value.trim();
       const pass = document.getElementById("passwordInput").value;
+      const avatar = previewAvatar.src;
       if (!user || !pass) return alert("Preencha todos os campos!");
       let data = JSON.parse(localStorage.getItem("users") || "{}");
       if (data[user]) return alert("Usuário já cadastrado.");
-      data[user] = pass;
+      data[user] = { pass, avatar };
       localStorage.setItem("users", JSON.stringify(data));
       alert("Usuário cadastrado com sucesso!");
+    }
+
+    function gerarNomeAleatorio() {
+      const nomes = ["nekoX", "anon-baka", "shadowsoul", "kamiRider", "tokyo0", "noiseX"];
+      const aleatorio = nomes[Math.floor(Math.random() * nomes.length)];
+      document.getElementById("usernameInput").value = aleatorio;
     }
   </script>
 </body>
