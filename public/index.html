@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<script>
+if (!localStorage.getItem("username")) {
+  window.location.href = "login.html";
+}
+</script>
     <div id="loginScreen" class="centered">
         <h2>Escolha um username:</h2>
         <input type="text" id="usernameInput" placeholder="Nome de usuário" />
