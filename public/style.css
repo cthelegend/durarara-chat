@@ -1,19 +1,70 @@
 body {
-    background-color: #111;
-    color: #684dff;
     font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     padding: 20px;
+    margin: 0;
+}
+
+#loginScreen, #chatScreen {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 #messages {
-    border: 1px solid #4c00ff;
     height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
+    background-color: #fafafa;
 }
 
-input, button {
+.inputContainer {
+    display: flex;
+    gap: 10px;
+}
+
+input[type="text"] {
+    flex: 1;
     padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     font-size: 16px;
+}
+
+.sendButton {
+    background-color: #684dff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sendButton:hover {
+    background-color: #5b42e5;
+}
+
+.sendButton:active {
+    background-color: #4a36cc;
+}
+
+@media (max-width: 600px) {
+    .inputContainer {
+        flex-direction: column;
+    }
+
+    .sendButton {
+        width: 100%;
+    }
+
+    input[type="text"] {
+        width: 100%;
+    }
 }
