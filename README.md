@@ -20,10 +20,10 @@ Um chat anônimo em tempo real inspirado no fórum clandestino do anime **Durara
 ## 🖼️ Prévia
 
 ### Tela de login:
-![Login](./assets/login-preview.png)
+![Login](https://i.imgur.com/sDchvsY.png)
 
 ### Interface do chat:
-![Chat](./assets/chat-preview.png)
+![Chat](https://i.imgur.com/yjIYupg.png)
 
 ---
 
