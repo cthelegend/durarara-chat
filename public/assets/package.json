@@ -1,11 +1,12 @@
 {
-  "name": "penischat",
+  "name": "durarara-chat",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "chat_server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node chat_server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "socket.io": "^4.7.2"
   }

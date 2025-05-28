@@ -1,28 +1,35 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PENISCHAT</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/lucide-static@0.270.0/iconfont/lucide.css" rel="stylesheet">
+  <script defer src="script.js"></script>
 </head>
 <body>
-  <div class="chat-wrapper">
-    <div class="chat-container">
-      <img src="./assets/logo.png" alt="Logo" class="logo" />
+  <div id="login-screen" class="login-container show">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h2>Bem-vindo ao PENISCHAT</h2>
+    <p>Escolha seu avatar para entrar</p>
+    <input type="file" accept="image/*" id="avatarInput" />
+    <img id="avatarPreview" class="avatar hidden" />
+    <button class="round-button" onclick="enterChat()">Entrar</button>
+  </div>
 
-      <div id="replyInfo" class="reply-info hidden"></div>
-      <div id="messages" class="chat-box"></div>
-      <div id="emojiPicker" class="emoji-picker hidden"></div>
-
-      <div class="input-container">
-        <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
-        <button id="sendButton" class="round-button">Enviar</button>
-      </div>
+  <div id="chat-screen" class="chat-screen hidden">
+    <div class="chat-header">
+      <img src="logo.png" alt="Logo" class="logo" />
+      <span>Conectado</span>
+    </div>
+    <div id="messages" class="chat-messages"></div>
+    <div class="chat-input">
+      <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
+      <button id="sendButton">📩</button>
+      <button onclick="document.getElementById('imageInput').click()">🖼️</button>
+      <button onclick="startRecording()">🎤</button>
+      <input type="file" accept="image/*" id="imageInput" style="display: none;" />
     </div>
   </div>
 </body>
-<script src="script.js"></script>
 </html>
