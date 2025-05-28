@@ -2,33 +2,29 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat 15KCRIS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PENISCHAT</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Aviso de anonimato -->
-  <div style="text-align: center; font-size: 12px; margin: 8px 0; opacity: 0.7;">
-    🔒 Este chat é anônimo, mas seu IP pode ser registrado pela hospedagem.<br>Para mais privacidade, use <a href="https://www.torproject.org/" target="_blank" style="color: #c084fc; font-weight: 500;">Tor</a> ou uma <a href="https://www.privacyguides.org/vpn/" target="_blank" style="color: #c084fc; font-weight: 500;">VPN confiável</a>.
-    Para mais privacidade, use <a href="https://www.torproject.org/" target="_blank" style="color: #fff; text-decoration: underline;">Tor</a> ou uma <a href="https://www.privacyguides.org/vpn/" target="_blank" style="color: #fff; text-decoration: underline;">VPN confiável</a>.
-  </div>
+  <div class="chat-container">
+    <img src="./assets/logo.png" alt="Logo" class="logo" />
 
-  <script>
-    if (!localStorage.getItem("username")) {
-      window.location.href = "login.html";
-    }
-  </script>
+    <div id="replyInfo" class="reply-info hidden"></div>
 
-  <div id="replyInfo" style="display: none; background: #222; padding: 8px; font-size: 13px; border-left: 4px solid #684dff; margin: 10px; border-radius: 4px;"></div>
+    <div id="messages" class="chat-box"></div>
 
-  <div id="chatScreen" class="chat-container">
-    <div id="messages"></div>
-    <div class="input-area">
-      <button id="emojiBtn" title="Emoji">😀</button>
-      <input type="text" id="messageInput" placeholder="Digite sua mensagem" autocomplete="off" />
+    <div id="emojiPicker" class="emoji-picker hidden"></div>
+
+    <div class="chat-input-area">
+      <button id="emojiBtn" class="emoji">😀</button>
+      <input type="text" id="messageInput" placeholder="Digite sua mensagem" />
       <button id="sendBtn">Enviar</button>
     </div>
-    <div id="emojiPicker" class="emoji-picker hidden"></div>
+
+    <p class="anon-warning">
+      🔒 Este chat é anônimo, mas o IP pode ser registrado pela hospedagem. Use <a href="#">VPN</a> ou <a href="#">Tor</a> para máxima privacidade.
+    </p>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>

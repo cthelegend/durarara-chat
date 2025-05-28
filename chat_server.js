@@ -10,12 +10,12 @@ const io = new Server(server, {
 });
 
 app.use(cors());
-app.use(express.static("public"));
+app.use(express.static("public")); // garante que index.html e assets funcionem
 
 let messageHistory = [];
 
 io.on("connection", (socket) => {
-    console.log("Usuário conectado");
+    console.log("Nova conexão anônima");
 
     socket.emit("history", messageHistory);
 
@@ -26,7 +26,8 @@ io.on("connection", (socket) => {
     socket.on("message", (msg) => {
         const fullMsg = {
             ...msg,
-            user: socket.username || "Anônimo"
+            user: msg.user || socket.username || "Anônimo",
+            avatar: msg.avatar || "avatar.png"
         };
         messageHistory.push(fullMsg);
         io.emit("message", fullMsg);
