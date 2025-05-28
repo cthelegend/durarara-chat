@@ -7,48 +7,25 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="login-container" id="login">
-    <div class="logo">PENIS💬CHAT</div>
-    <p>Escolha seu avatar para entrar</p>
-    <input type="file" id="avatar" />
-    <button onclick="enterChat()">Entrar</button>
-  </div>
+  <div class="chat-container">
+    <img src="./assets/logo.png" alt="Logo" class="logo" />
 
-  <div class="chat-container" id="chat" style="display:none;">
-    <div id="messages" style="max-height: 300px; overflow-y: auto;"></div>
-    <input id="m" autocomplete="off" placeholder="Digite sua mensagem..." />
-    <button onclick="sendMsg()">Enviar</button>
-    <div class="footer">Você está conectado</div>
+    <div id="chat" class="chat-box">
+      <!-- Mensagens aparecem aqui -->
+    </div>
+
+    <div class="chat-input-area">
+      <button class="emoji">😀</button>
+      <input type="text" id="messageInput" placeholder="Digite sua mensagem" />
+      <button id="sendBtn">Enviar</button>
+    </div>
+
+    <p class="anon-warning">
+Este chat é anônimo, mas seu IP pode ser registrado pela hospedagem.
+    </p>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const loginDiv = document.getElementById("login");
-    const chatDiv = document.getElementById("chat");
-    const input = document.getElementById("m");
-    const messages = document.getElementById("messages");
-
-    function enterChat() {
-      loginDiv.style.display = "none";
-      chatDiv.style.display = "block";
-    }
-
-    function sendMsg() {
-      const msg = input.value;
-      if (msg.trim() !== "") {
-        socket.emit("chat message", msg);
-        input.value = "";
-      }
-    }
-
-    socket.on("chat message", function(msg) {
-      const el = document.createElement("div");
-      el.textContent = msg;
-      el.className = "message-box";
-      messages.appendChild(el);
-      messages.scrollTop = messages.scrollHeight;
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
