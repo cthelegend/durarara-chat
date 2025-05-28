@@ -1,35 +1,54 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>P-Chat</title>
+  <title>PENISCHAT</title>
   <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
 </head>
 <body>
-  <div id="login-screen" class="login-container show">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h2>Bem-vindo ao PENISCHAT</h2>
+  <div class="login-container" id="login">
+    <div class="logo">PENIS💬CHAT</div>
     <p>Escolha seu avatar para entrar</p>
-    <input type="file" accept="image/*" id="avatarInput" />
-    <img id="avatarPreview" class="avatar hidden" />
-    <button class="round-button" onclick="enterChat()">Entrar</button>
+    <input type="file" id="avatar" />
+    <button onclick="enterChat()">Entrar</button>
   </div>
 
-  <div id="chat-screen" class="chat-screen hidden">
-    <div class="chat-header">
-      <img src="logo.png" alt="Logo" class="logo" />
-      <span>Conectado</span>
-    </div>
-    <div id="messages" class="chat-messages"></div>
-    <div class="chat-input">
-      <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
-      <button id="sendButton">📩</button>
-      <button onclick="document.getElementById('imageInput').click()">🖼️</button>
-      <button onclick="startRecording()">🎤</button>
-      <input type="file" accept="image/*" id="imageInput" style="display: none;" />
-    </div>
+  <div class="chat-container" id="chat" style="display:none;">
+    <div id="messages" style="max-height: 300px; overflow-y: auto;"></div>
+    <input id="m" autocomplete="off" placeholder="Digite sua mensagem..." />
+    <button onclick="sendMsg()">Enviar</button>
+    <div class="footer">Você está conectado</div>
   </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const loginDiv = document.getElementById("login");
+    const chatDiv = document.getElementById("chat");
+    const input = document.getElementById("m");
+    const messages = document.getElementById("messages");
+
+    function enterChat() {
+      loginDiv.style.display = "none";
+      chatDiv.style.display = "block";
+    }
+
+    function sendMsg() {
+      const msg = input.value;
+      if (msg.trim() !== "") {
+        socket.emit("chat message", msg);
+        input.value = "";
+      }
+    }
+
+    socket.on("chat message", function(msg) {
+      const el = document.createElement("div");
+      el.textContent = msg;
+      el.className = "message-box";
+      messages.appendChild(el);
+      messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
 </body>
 </html>
