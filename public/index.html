@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,29 +6,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PENISCHAT</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/lucide-static@0.270.0/iconfont/lucide.css" rel="stylesheet">
 </head>
 <body>
-  <div class="chat-container">
-    <img src="./assets/logo.png" alt="Logo" class="logo" />
+  <div class="chat-wrapper">
+    <div class="chat-container">
+      <img src="./assets/logo.png" alt="Logo" class="logo" />
 
-    <div id="replyInfo" class="reply-info hidden"></div>
+      <div id="replyInfo" class="reply-info hidden"></div>
+      <div id="messages" class="chat-box"></div>
+      <div id="emojiPicker" class="emoji-picker hidden"></div>
 
-    <div id="messages" class="chat-box"></div>
-
-    <div id="emojiPicker" class="emoji-picker hidden"></div>
-
-    <div class="chat-input-area">
-      <button id="emojiBtn" class="emoji">😀</button>
-      <input type="text" id="messageInput" placeholder="Digite sua mensagem" />
-      <button id="sendBtn">Enviar</button>
+      <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Digite sua mensagem..." />
+        <button id="sendButton" class="round-button">Enviar</button>
+      </div>
     </div>
-
-    <p class="anon-warning">
-      🔒 Este chat é anônimo, mas o IP pode ser registrado pela hospedagem. Use <a href="#">VPN</a> ou <a href="#">Tor</a> para máxima privacidade.
-    </p>
   </div>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
 </body>
+<script src="script.js"></script>
 </html>
